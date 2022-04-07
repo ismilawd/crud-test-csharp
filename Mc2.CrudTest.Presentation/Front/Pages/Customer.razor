@@ -1,0 +1,47 @@
+﻿@page "/customer"
+@using Mc2.CrudTest.Domain
+@using CustomerVM=Mc2.CrudTest.Shared.Models.Customer @*bypass page class conflict*@
+@inject HttpClient _http
+
+<h1>Customer</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (_customers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Created Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (CustomerVM customer in _customers)
+            {
+                <tr>
+                    <td>@customer.Id.ToString()</td>
+                    <td>@customer.Name</td>
+                    <td>@customer.Address</td>
+                    <td>@customer.CreatedDate.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private CustomerVM[] _customers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _customers = await _http.GetFromJsonAsync<CustomerVM[]>("Customer");
+    }
+
+}
